@@ -136,7 +136,18 @@ function makeBook(bookObject) {
         });
     btnRed.innerText = "Hapus Buku";
     btnRed.classList.add('red');
-    buttonAction.append(btnGreen,btnRed)
+
+
+    const btnYellow = document.createElement('button');
+    btnYellow.addEventListener('click', function () {
+        editBook(bookObject.id);
+        });
+    btnYellow.innerText = "Edit Buku";
+    btnYellow.classList.add('yellow');
+
+
+
+    buttonAction.append(btnGreen, btnRed, btnYellow)
     const container = document.createElement('div');
     container.classList.add('book_item');
     container.append(textContainer);
@@ -166,13 +177,38 @@ function makeBook(bookObject) {
   }
 
   function removeBook(bookId){
-    // ...
+    let text = "Apakah anda yaking untuk menghapus buku ini?";
+  if (confirm(text) == false) return;
     for(var i =0;i<books.length;i++){
         if(books[i].id == bookId){
             books.splice(i,1)
         }
     }
     document.dispatchEvent(new Event(RENDER_EVENT));
+  }
+
+  function editBook(bookId){
+    thisBook = findBook(bookId)
+    let newTitle = prompt("Silahkan ganti judul baru", thisBook.title);
+    let newAuthor = prompt("Silahkan ganti pengarang baru", thisBook.author);
+    let newYear = prompt("Silahkan ganti tahun baru", thisBook.year);
+
+    if(newTitle.length==0) return;
+    if(newAuthor.length==0) return;
+    if(newYear.length==0) return;
+    if(isNumeric(newYear)) {
+      thisBook.title = newTitle;
+      thisBook.author = newAuthor;
+      thisBook.year = newYear;
+      document.dispatchEvent(new Event(RENDER_EVENT));
+      saveData();
+    }
+  }
+
+  function isNumeric(str) {
+    if (typeof str != "string") return false
+    return !isNaN(str) && 
+           !isNaN(parseFloat(str))
   }
 
   function findBook(bookID) {
