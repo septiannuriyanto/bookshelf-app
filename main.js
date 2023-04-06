@@ -15,12 +15,18 @@ if (checkBox.checked == true){
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    alert('Welcome to Ohara Library')
+  alert('Welcome to Ohara Library')
 	const submitForm = document.getElementById('inputBook');
 	submitForm.addEventListener('submit', function (event) {
 	event.preventDefault();
 	addBook();
 	});
+
+  const searchForm = document.getElementById('searchBook');
+  searchForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+    searchBook();
+    });
 
     if (isStorageExist()) {
         loadDataFromStorage();
@@ -45,55 +51,53 @@ document.addEventListener(RENDER_EVENT, function () {
     }
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
-        // ...
-        
-      });
-
-
 
 function addBook() {
-    // ...
-    const title = document.getElementById('inputBookTitle').value;
+  const title = document.getElementById('inputBookTitle').value;
 	const author = document.getElementById('inputBookAuthor').value;
-    const year = document.getElementById('inputBookYear').value;
-    const checkBox = document.getElementById('inputBookIsComplete').checked
+  const year = document.getElementById('inputBookYear').value;
+  const checkBox = document.getElementById('inputBookIsComplete').checked
 	const generatedID = generateId();
 	const bookObject = generateBookObject(generatedID, title, author, year, checkBox);
 	books.push(bookObject);
-    document.dispatchEvent(new Event(RENDER_EVENT));
-    //.....................................................
-
-    
+  document.dispatchEvent(new Event(RENDER_EVENT));
    saveData();
   }
 
-    function generateId() {
-        return +new Date();
+function searchBook(){
+  const input = document.getElementById('searchBookTitle').value
+  filter = input.toUpperCase();
+  bookItems = document.getElementsByClassName("book_item");
+  for(var i =0; i<bookItems.length;i++){
+    inners = bookItems[i].getElementsByClassName("inner");
+    titles = inners[0].getElementsByTagName("h3");
+    title = titles[0].innerText.toUpperCase();
+    if(title.indexOf(filter) > -1){
+        bookItems[i].style.display="";
     }
+    else{
+      bookItems[i].style.display="none";
+    }
+  }
+}
 
-    function generateBookObject(id, title, author, year, isCompleted) {
-        return {
-            id: id,
-            title: title,
-            author: author,
-            year: year,
-            isComplete: isCompleted,
-        }
+
+
+function generateId() {
+  return +new Date();
+}
+
+function generateBookObject(id, title, author, year, isCompleted) {
+    return {
+        id: id,
+        title: title,
+        author: author,
+        year: year,
+        isComplete: isCompleted,
     }
+}
     
    //------------------------------------------------------------------------------------------
-   
-//    <div class="book_item">
-//    <h3>Book Title</h3>
-//    <p>Penulis: John Doe</p>
-//    <p>Tahun: 2002</p>
-
-//    <div class="action">
-//      <button class="green">Selesai dibaca</button>
-//      <button class="red">Hapus buku</button>
-//    </div>
-//  </div> 
 
 function makeBook(bookObject) {
     const textTitle = document.createElement('h3');
